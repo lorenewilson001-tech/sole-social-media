@@ -61,7 +61,10 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
           message,
           title: 'CLIENT FEEDBACK',
           actionLabel: 'VIEW IN PORTAL',
-          actionUrl: window.location.origin
+          actionUrl: window.location.origin,
+          imageUrl: transformDriveUrl(post.imageUrl || post.videoUrl || '', 'thumbnail'),
+          caption: post.caption,
+          variant: 'client'
         }).then(() => {
         }).catch(err => {
           console.error('Email fail on comment:', err);
@@ -78,7 +81,10 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
           message,
           title: 'CREATOR UPDATE',
           actionLabel: 'VIEW IN PORTAL',
-          actionUrl: `${window.location.origin}/?view=client`
+          actionUrl: `${window.location.origin}/?view=client`,
+          imageUrl: transformDriveUrl(post.imageUrl || post.videoUrl || '', 'thumbnail'),
+          caption: post.caption,
+          variant: 'creator'
         }).then(() => {
           console.log('Comment notification sent to Loren');
         }).catch(err => {
@@ -112,7 +118,10 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
           message,
           title: isApproved ? 'POST APPROVED' : 'REVISION REQUESTED',
           actionLabel: 'VIEW IN PORTAL',
-          actionUrl: window.location.origin
+          actionUrl: window.location.origin,
+          imageUrl: transformDriveUrl(post.imageUrl || post.videoUrl || '', 'thumbnail'),
+          caption: post.caption,
+          variant: 'client'
         }).then(() => {
           alert(`Post marked as ${status}. Notification sent to Jannat.`);
         }).catch(err => {

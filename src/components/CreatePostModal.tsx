@@ -49,7 +49,10 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose }) => 
             message,
             title: 'NEW CONTENT DRAFT',
             actionLabel: 'REVIEW IN PORTAL',
-            actionUrl: `${window.location.origin}/?view=client`
+            actionUrl: `${window.location.origin}/?view=client`,
+            imageUrl: transformDriveUrl(imageUrl, 'thumbnail'),
+            caption: caption,
+            variant: 'creator'
           });
           alert('Post Published! Automated email sent to Chef Loren.');
         } catch (emailErr) {
