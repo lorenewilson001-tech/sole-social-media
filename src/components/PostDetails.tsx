@@ -59,7 +59,11 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
           bcc: JANNAT_EMAILS.slice(1),
           subject,
           message
-        }).catch(err => console.error('Silent email fail on comment:', err));
+        }).then(() => {
+          console.log('Comment notification sent to Jannat');
+        }).catch(err => {
+          console.error('Email fail on comment:', err);
+        });
       } else {
         // Creator (Jannat) commented -> Notify Chef Loren
         const subject = `Update from Jannat - ${post.title}`;
@@ -70,10 +74,15 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
           bcc: LOREN_EMAILS.slice(1),
           subject,
           message
-        }).catch(err => console.error('Silent email fail on comment:', err));
+        }).then(() => {
+          console.log('Comment notification sent to Loren');
+        }).catch(err => {
+          console.error('Email fail on comment:', err);
+        });
       }
       
       setNewComment('');
+      alert('Feedback sent!');
     } catch (error) {
       console.error(error);
     } finally {
@@ -96,7 +105,12 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
           bcc: JANNAT_EMAILS.slice(1),
           subject,
           message
-        }).catch(err => console.error('Silent email fail on status change:', err));
+        }).then(() => {
+          alert(`Post marked as ${status}. Notification sent to Jannat.`);
+        }).catch(err => {
+          console.error('Email fail on status change:', err);
+          alert(`Post marked as ${status}. (Email notification failed)`);
+        });
       }
     } catch (error) {
       console.error(error);
