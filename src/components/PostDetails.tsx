@@ -17,9 +17,18 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = postService.subscribeToComments(post.id, setComments);
+    const unsubscribe = postService.subscribeToComments(post.id, (fetchedComments) => {
+      // Patch generic names for display
+      const patched = fetchedComments.map(c => {
+        if (c.authorName === 'Guest' || c.authorName === 'anonymous' || c.authorName === 'Client') {
+          return { ...c, authorName: isClientView ? `Chef ${CLIENT_NAME}` : CREATOR_NAME };
+        }
+        return c;
+      });
+      setComments(patched);
+    });
     return () => unsubscribe();
-  }, [post.id]);
+  }, [post.id, isClientView]);
 
   const handleSendComment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,7 +85,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
     >
       <motion.div
         layoutId={post.id}
-        className="w-full max-w-6xl bg-brand-card rounded-3xl overflow-hidden flex flex-col md:flex-row h-full max-h-[85vh] shadow-[12px_12px_0px_rgba(0,0,0,0.5)] border border-white/10"
+        className="w-full max-w-6xl bg-brand-card rounded-3xl overflow-hidden flex flex-col md:flex-row h-full max-h-[92vh] shadow-[12px_12px_0px_rgba(0,0,0,0.5)] border border-white/10"
       >
         {/* Mobile Header */}
         <div className="md:hidden flex items-center justify-between p-4 border-b border-white/5">
