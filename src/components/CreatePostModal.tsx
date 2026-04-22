@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Image as ImageIcon, Video, Send, Loader2 } from 'lucide-react';
-import { postService } from '../services/postService';
+import { postService, transformDriveUrl } from '../services/postService';
 import { LOREN_EMAILS } from '../lib/firebase';
 
 interface CreatePostModalProps {
@@ -77,43 +77,41 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose }) => 
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Thumbnail Link (.jpg/.png)</label>
+                <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Thumbnail Link (Drive or Direct)</label>
                 <div className="relative">
                   <input
                     required
                     type="url"
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}
-                    placeholder="Use ImgBB or Direct Link"
+                    placeholder="Paste link here..."
                     className="w-full bg-brand-dark/50 border border-white/10 text-white rounded-xl py-3 pl-10 pr-4 focus:outline-none focus:border-brand-gold transition-all text-xs font-medium"
                   />
                   <ImageIcon className="absolute left-3.5 top-3.5 text-slate-500" size={16} />
                 </div>
-                <p className="text-[9px] text-brand-gold/60 italic ml-1">*Don't use Google Drive/Google Photos links.</p>
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Video Link (Direct .mp4)</label>
+                <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Video Link (Drive or Direct)</label>
                 <div className="relative">
                   <input
                     type="url"
                     value={videoUrl}
                     onChange={(e) => setVideoUrl(e.target.value)}
-                    placeholder="Direct video link"
+                    placeholder="Paste link here..."
                     className="w-full bg-brand-dark/50 border border-white/10 text-white rounded-xl py-3 pl-10 pr-4 focus:outline-none focus:border-brand-gold transition-all text-xs font-medium"
                   />
                   <Video className="absolute left-3.5 top-3.5 text-slate-500" size={16} />
                 </div>
-                <p className="text-[9px] text-slate-500 italic ml-1">Example: https://site.com/video.mp4</p>
               </div>
             </div>
 
             {(imageUrl || videoUrl) && (
               <div className="mt-2 aspect-video rounded-xl overflow-hidden border border-white/10 bg-black relative group shadow-lg">
                 {videoUrl ? (
-                  <video src={videoUrl} className="w-full h-full object-contain" controls />
+                  <video src={transformDriveUrl(videoUrl)} className="w-full h-full object-contain" controls />
                 ) : (
-                  <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                  <img src={transformDriveUrl(imageUrl)} alt="Preview" className="w-full h-full object-cover" />
                 )}
                 <div className="absolute top-2 right-2 bg-brand-red px-2 py-1 rounded text-[8px] font-black text-white uppercase tracking-tighter">
                   Media Preview
