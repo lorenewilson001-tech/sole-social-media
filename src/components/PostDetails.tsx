@@ -112,12 +112,20 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
         {/* Image Side (Instagram Style - Left) */}
         <div className="flex-[1.8] bg-black flex items-center justify-center relative overflow-hidden group min-h-[300px]">
           {safeVideoUrl ? (
-            <video 
-              src={safeVideoUrl} 
-              className="w-full h-full object-contain z-0" 
-              controls 
-              poster={safeImageUrl}
-            />
+            post.videoUrl?.includes('drive.google.com') ? (
+              <iframe 
+                src={safeVideoUrl} 
+                className="w-full h-full border-none z-0"
+                allow="autoplay"
+              />
+            ) : (
+              <video 
+                src={safeVideoUrl} 
+                className="w-full h-full object-contain z-0" 
+                controls 
+                poster={safeImageUrl}
+              />
+            )
           ) : (
             <img 
               src={safeImageUrl} 

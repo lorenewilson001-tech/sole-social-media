@@ -38,15 +38,20 @@ const handleFirestoreError = (error: any, operationType: FirestoreErrorInfo['ope
   throw new Error(JSON.stringify(errorInfo));
 };
 
-export const transformDriveUrl = (url: string): string => {
+export const transformDriveUrl = (url: string, isVideo = false): string => {
   if (!url) return url;
   
   // Handle Google Drive
   if (url.includes('drive.google.com')) {
     const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
     if (match && match[1]) {
-      // lh3.googleusercontent.com is often more direct for images
-      return `https://lh3.googleusercontent.com/d/${match[1]}`;
+      const id = match[1];
+      if (isVideo) {
+        // For video preview/embed in iframe
+        return `https://drive.google.com/file/d/${id}/preview`;
+      }
+      // For images
+      return `https://lh3.googleusercontent.com/d/${id}`;
     }
   }
   
