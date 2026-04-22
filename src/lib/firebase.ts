@@ -11,7 +11,7 @@ export const storage = getStorage(app);
 export const googleProvider = new GoogleAuthProvider();
 
 export const JANNAT_EMAILS = [
-  'gloccommun@gmail.com'
+  'lorenewilson001@gmail.com' // Changed from gloccommun@gmail.com for Resend Free Tier testing
 ]; 
 
 export const LOREN_EMAILS = [
