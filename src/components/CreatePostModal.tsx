@@ -13,7 +13,6 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose }) => 
   const [imageUrl, setImageUrl] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
   const [caption, setCaption] = useState('');
-  const [clientEmail, setClientEmail] = useState(LOREN_EMAILS[0]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,11 +32,20 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose }) => 
         imageUrl: imageUrl.trim() || '',
         videoUrl: videoUrl.trim() || '',
         caption,
-        clientEmail: clientEmail.toLowerCase().trim()
+        clientEmail: LOREN_EMAILS[0].toLowerCase().trim() // Default to primary client
       });
+
       if (result) {
+        // Trigger notification to Client
+        const subject = `New Content Draft: ${title}`;
+        const message = `Hello Loren! I have just uploaded a new content draft for you: "${title}".\n\nPlease review it here: ${window.location.origin}/?view=client\n\nCaption: ${caption}`;
+        const bccList = LOREN_EMAILS.join(',');
+        const mailtoUrl = `mailto:${LOREN_EMAILS[0]}?bcc=${bccList}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+        
+        window.location.href = mailtoUrl;
+        
         onClose();
-        alert('Post Published Successfully!');
+        alert('Post Published! Email notification initialized.');
       }
     } catch (error) {
       console.error(error);
@@ -146,18 +154,6 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose }) => 
                 onChange={(e) => setCaption(e.target.value)}
                 placeholder="Write the post caption here..."
                 className="w-full bg-brand-dark/50 border border-white/10 text-white rounded-xl py-3 px-4 focus:outline-none focus:border-brand-gold transition-all resize-none font-medium italic text-sm"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Client Email</label>
-              <input
-                required
-                type="email"
-                value={clientEmail}
-                onChange={(e) => setClientEmail(e.target.value)}
-                placeholder="e.g., client@example.com"
-                className="w-full bg-brand-dark/50 border border-white/10 text-white rounded-xl py-3 px-4 focus:outline-none focus:border-brand-gold transition-all font-bold"
               />
             </div>
 
