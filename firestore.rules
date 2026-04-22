@@ -1,0 +1,83 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(authorId) {
+      return isSignedIn() && request.auth.uid == authorId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- Post Validation ---
+    function isValidPost(post) {
+      return post.title is string && post.title.size() > 0 && post.title.size() <= 200 &&
+             post.imageUrl is string && post.imageUrl.size() > 0 && post.imageUrl.size() <= 2000 &&
+             post.caption is string && post.caption.size() <= 5000 &&
+             post.status in ['pending', 'approved', 'revision'] &&
+             post.authorId == request.auth.uid &&
+             post.clientEmail is string && post.clientEmail.size() <= 200 &&
+             post.createdAt == request.time;
+    }
+
+    // --- Comment Validation ---
+    function isValidComment(comment) {
+      return comment.postId is string && isValidId(comment.postId) &&
+             comment.text is string && comment.text.size() > 0 && comment.text.size() <= 2000 &&
+             comment.authorId == request.auth.uid &&
+             comment.authorName is string && comment.authorName.size() <= 100 &&
+             comment.createdAt == request.time;
+    }
+
+    // --- Rules ---
+    match /posts/{postId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn() && (resource.data.authorId == request.auth.uid || resource.data.clientEmail == request.auth.token.email);
+      
+      allow create: if isSignedIn() && isValidId(postId) && isValidPost(incoming());
+      
+      allow update: if isSignedIn() && (
+        // Case 1: Owner updates content
+        (isOwner(existing().authorId) && 
+         incoming().diff(existing()).affectedKeys().hasOnly(['title', 'imageUrl', 'caption', 'status', 'updatedAt']) &&
+         incoming().authorId == existing().authorId &&
+         incoming().createdAt == existing().createdAt &&
+         incoming().updatedAt == request.time) ||
+        // Case 2: Client updates status
+        (isSignedIn() && request.auth.token.email == existing().clientEmail &&
+         incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']) &&
+         incoming().authorId == existing().authorId &&
+         incoming().createdAt == existing().createdAt &&
+         incoming().updatedAt == request.time)
+      );
+
+      match /comments/{commentId} {
+        allow list: if isSignedIn(); // Restricted by parent post read
+        allow get: if isSignedIn();
+        
+        allow create: if isSignedIn() && isValidId(commentId) && isValidComment(incoming()) &&
+                      exists(/databases/$(database)/documents/posts/$(postId));
+                      
+        allow delete: if isSignedIn() && isOwner(existing().authorId);
+      }
+    }
+  }
+}

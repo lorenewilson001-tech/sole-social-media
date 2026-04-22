@@ -1,0 +1,9 @@
+{
+  "name": "PostApproval - Client Content Portal",
+  "description": "A professional platform for content creators to share social media posts with clients for approval and feedback.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": []
+}

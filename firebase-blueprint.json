@@ -1,0 +1,47 @@
+{
+  "entities": {
+    "Post": {
+      "title": "Social Media Post",
+      "description": "Represents a social media post pending approval.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Internal title for the post" },
+        "imageUrl": { "type": "string", "description": "URL of the post image" },
+        "caption": { "type": "string", "description": "The caption for the post" },
+        "status": { 
+          "type": "string", 
+          "enum": ["pending", "approved", "revision"],
+          "description": "Current approval status" 
+        },
+        "authorId": { "type": "string", "description": "Creator of the post" },
+        "clientEmail": { "type": "string", "description": "Target client email" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "imageUrl", "caption", "status", "authorId", "createdAt"]
+    },
+    "Comment": {
+      "title": "Post Comment",
+      "description": "Feedback from the client or creator.",
+      "type": "object",
+      "properties": {
+        "postId": { "type": "string" },
+        "text": { "type": "string" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["postId", "text", "authorId", "authorName", "createdAt"]
+    }
+  },
+  "firestore": {
+    "posts": {
+      "schema": "Post",
+      "description": "Collection of social media posts for approval"
+    },
+    "posts/{postId}/comments": {
+      "schema": "Comment",
+      "description": "Comments attached to a specific post"
+    }
+  }
+}
