@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Send, CheckCircle2, AlertCircle, Clock, ExternalLink, MessageSquare, Plus } from 'lucide-react';
+import { X, Send, CheckCircle2, AlertCircle, Clock, ExternalLink, MessageSquare, Plus, ThumbsUp, ThumbsDown, Share2 } from 'lucide-react';
 import { Post, Comment } from '../types';
 import { postService } from '../services/postService';
 import { auth, CREATOR_NAME, JANNAT_EMAILS, LOREN_EMAILS } from '../lib/firebase';
@@ -155,25 +155,38 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
                 </div>
             </div>
             
-            <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap max-h-32 overflow-y-auto custom-scrollbar italic font-medium">
+            <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap max-h-32 overflow-y-auto custom-scrollbar italic font-medium mb-6">
               "{post.caption}"
             </p>
 
-            {isClientView && post.status !== 'approved' && (
-              <div className="flex gap-2 mt-6">
+            {isClientView && (
+              <div className="flex items-center justify-around py-4 border-t border-b border-white/5">
                 <button
-                  onClick={() => handleStatusChange('approved')}
-                  className="flex-1 flex items-center justify-center gap-2 bg-brand-red hover:bg-brand-orange text-white font-black py-3 rounded-xl transition-all shadow-[4px_4px_0px_theme(colors.brand-gold)] active:translate-y-1 active:shadow-none border border-white/10 uppercase text-xs tracking-widest"
+                  onClick={() => post.status !== 'approved' && handleStatusChange('approved')}
+                  disabled={post.status === 'approved'}
+                  className={`flex items-center gap-2 text-xs font-black uppercase tracking-widest transition-all ${
+                    post.status === 'approved' ? 'text-emerald-500 opacity-50' : 'text-slate-400 hover:text-brand-red'
+                  }`}
                 >
-                  <CheckCircle2 size={16} />
+                  <ThumbsUp size={16} />
                   Approve
                 </button>
                 <button
-                  onClick={() => handleStatusChange('revision')}
-                  className="flex-1 flex items-center justify-center gap-2 bg-brand-card hover:bg-slate-800 text-white font-black py-3 rounded-xl transition-all active:translate-y-1 border border-white/5 uppercase text-xs tracking-widest"
+                  onClick={() => post.status !== 'revision' && handleStatusChange('revision')}
+                  disabled={post.status === 'revision'}
+                  className={`flex items-center gap-2 text-xs font-black uppercase tracking-widest transition-all ${
+                    post.status === 'revision' ? 'text-rose-500 opacity-50' : 'text-slate-400 hover:text-brand-red'
+                  }`}
                 >
-                  <AlertCircle size={16} />
-                  Revise
+                  <ThumbsDown size={16} />
+                  Reject
+                </button>
+                <button
+                  onClick={() => document.getElementById('comment-input')?.focus()}
+                  className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-brand-red transition-all"
+                >
+                  <Share2 size={16} />
+                  Feedback
                 </button>
               </div>
             )}
@@ -230,6 +243,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
               )}
               <div className="relative">
                 <input
+                  id="comment-input"
                   type="text"
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
