@@ -49,7 +49,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose }) => 
             message,
             title: 'NEW CONTENT DRAFT',
             actionLabel: 'REVIEW IN PORTAL',
-            actionUrl: `${window.location.origin}/?view=client`,
+            actionUrl: `${window.location.origin}/?view=client&postId=${id}`,
             imageUrl: transformDriveUrl(imageUrl, 'thumbnail'),
             caption: caption,
             variant: 'creator'

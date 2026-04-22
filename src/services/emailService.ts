@@ -34,20 +34,26 @@ const getEmailTemplate = (title: string, message: string, params: Partial<EmailP
         <p style="color: #d1d5db; line-height: 1.8; font-size: 15px; white-space: pre-wrap; margin-bottom: 32px;">${message}</p>
 
         ${imageUrl || caption ? `
-          <div style="background-color: #120e0b; border: 1px solid rgba(166, 138, 86, 0.2); border-radius: 12px; padding: 20px; margin-bottom: 32px;">
-            <p style="margin-top: 0; font-size: 10px; font-weight: 900; color: ${accentColor}; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Reference Content:</p>
-            <div style="display: flex; align-items: flex-start; gap: 16px;">
-              ${imageUrl ? `
-                <div style="width: 80px; height: 80px; border-radius: 8px; overflow: hidden; background-color: #000; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1);">
-                  <img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: cover;" alt="Thumbnail" />
-                </div>
-              ` : ''}
-              <div style="flex: 1;">
-                <p style="margin: 0; color: #94a3b8; font-size: 13px; line-height: 1.5; font-style: italic;">
-                  ${caption ? `"${caption}"` : 'Image Attachment'}
-                </p>
-              </div>
-            </div>
+          <div style="background-color: #120e0b; border: 1px solid rgba(166, 138, 86, 0.2); border-radius: 12px; padding: 24px; margin-bottom: 32px;">
+            <p style="margin-top: 0; font-size: 10px; font-weight: 900; color: ${accentColor}; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px;">Reference Content:</p>
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+              <tr>
+                <td width="55%" style="vertical-align: top; padding-right: 20px;">
+                  ${imageUrl ? `
+                    <div style="width: 100%; border-radius: 12px; overflow: hidden; background-color: #000; border: 1px solid rgba(255,255,255,0.1);">
+                      <img src="${imageUrl}" style="width: 100%; display: block; border-radius: 8px;" alt="Thumbnail" />
+                    </div>
+                  ` : ''}
+                </td>
+                <td width="45%" style="vertical-align: middle;">
+                  <div style="border-left: 2px solid ${accentColor}; padding-left: 16px;">
+                    <p style="margin: 0; color: #94a3b8; font-size: 14px; line-height: 1.6; font-style: italic;">
+                      ${caption ? `"${caption}"` : 'Image Attachment'}
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            </table>
           </div>
         ` : ''}
 

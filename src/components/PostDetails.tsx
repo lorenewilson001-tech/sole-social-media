@@ -61,7 +61,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
           message,
           title: 'CLIENT FEEDBACK',
           actionLabel: 'VIEW IN PORTAL',
-          actionUrl: window.location.origin,
+          actionUrl: `${window.location.origin}/?postId=${post.id}`,
           imageUrl: transformDriveUrl(post.imageUrl || post.videoUrl || '', 'thumbnail'),
           caption: post.caption,
           variant: 'client'
@@ -81,7 +81,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
           message,
           title: 'CREATOR UPDATE',
           actionLabel: 'VIEW IN PORTAL',
-          actionUrl: `${window.location.origin}/?view=client`,
+          actionUrl: `${window.location.origin}/?view=client&postId=${post.id}`,
           imageUrl: transformDriveUrl(post.imageUrl || post.videoUrl || '', 'thumbnail'),
           caption: post.caption,
           variant: 'creator'
@@ -118,7 +118,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
           message,
           title: isApproved ? 'POST APPROVED' : 'REVISION REQUESTED',
           actionLabel: 'VIEW IN PORTAL',
-          actionUrl: window.location.origin,
+          actionUrl: `${window.location.origin}/?postId=${post.id}`,
           imageUrl: transformDriveUrl(post.imageUrl || post.videoUrl || '', 'thumbnail'),
           caption: post.caption,
           variant: 'client'

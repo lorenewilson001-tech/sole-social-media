@@ -18,17 +18,37 @@ export const Dashboard: React.FC = () => {
   const [copiedId, setCopiedId] = useState(false);
 
   useEffect(() => {
-    const unsubscribeCreator = postService.subscribeToPosts(setPosts);
-    let unsubscribeClient = () => {};
+    // Check for postId in URL for deep linking
+    const params = new URLSearchParams(window.location.search);
+    const postId = params.get('postId');
+    const view = params.get('view');
     
-    // Auto-subscribe if no user to ensure data shows up instantly
-    unsubscribeClient = postService.subscribeToClientPosts(LOREN_EMAILS[0], setClientPosts);
+    if (view === 'client') {
+      setActiveTab('client');
+    }
+
+    const unsubscribeCreator = postService.subscribeToPosts((allPosts) => {
+      setPosts(allPosts);
+      if (postId && !selectedPost) {
+        const post = allPosts.find(p => p.id === postId);
+        if (post) setSelectedPost(post);
+      }
+    });
+
+    let unsubscribeClient = () => {};
+    unsubscribeClient = postService.subscribeToClientPosts(LOREN_EMAILS[0], (allClientPosts) => {
+      setClientPosts(allClientPosts);
+      if (postId && !selectedPost) {
+        const post = allClientPosts.find(p => p.id === postId);
+        if (post) setSelectedPost(post);
+      }
+    });
 
     return () => {
       unsubscribeCreator();
       unsubscribeClient();
     };
-  }, []);
+  }, [selectedPost]);
 
   const handleLogout = () => auth.signOut();
 
