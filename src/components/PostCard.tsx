@@ -31,7 +31,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
         <img 
           src={displayImageUrl} 
           alt={post.title} 
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           referrerPolicy="no-referrer"
         />
         {post.videoUrl && (
