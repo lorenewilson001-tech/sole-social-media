@@ -18,7 +18,9 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
 
   const { color, icon: Icon, label } = statusConfig[post.status] || statusConfig.pending;
 
-  const displayImageUrl = post.imageUrl ? transformDriveUrl(post.imageUrl) : '';
+  const displayImageUrl = post.imageUrl 
+    ? transformDriveUrl(post.imageUrl, 'image') 
+    : (post.videoUrl?.includes('drive.google.com') ? transformDriveUrl(post.videoUrl, 'thumbnail') : '');
 
   return (
     <motion.div

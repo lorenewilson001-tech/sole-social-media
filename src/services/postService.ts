@@ -38,7 +38,7 @@ const handleFirestoreError = (error: any, operationType: FirestoreErrorInfo['ope
   throw new Error(JSON.stringify(errorInfo));
 };
 
-export const transformDriveUrl = (url: string, isVideo = false): string => {
+export const transformDriveUrl = (url: string, mode: 'image' | 'video' | 'thumbnail' = 'image'): string => {
   if (!url) return url;
   
   // Handle Google Drive
@@ -46,11 +46,18 @@ export const transformDriveUrl = (url: string, isVideo = false): string => {
     const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
     if (match && match[1]) {
       const id = match[1];
-      if (isVideo) {
+      
+      if (mode === 'video') {
         // For video preview/embed in iframe
         return `https://drive.google.com/file/d/${id}/preview`;
       }
-      // For images
+      
+      if (mode === 'thumbnail') {
+        // Get a generated thumbnail from Drive (works for images and videos)
+        return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`;
+      }
+      
+      // Default: For images direct embed
       return `https://lh3.googleusercontent.com/d/${id}`;
     }
   }

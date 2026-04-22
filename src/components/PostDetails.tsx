@@ -19,8 +19,10 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
   const [isEditing, setIsEditing] = useState(false);
 
   // Helper to ensure URLs are always "web-ready"
-  const safeImageUrl = post.imageUrl ? transformDriveUrl(post.imageUrl) : '';
-  const safeVideoUrl = post.videoUrl ? transformDriveUrl(post.videoUrl) : '';
+  const safeImageUrl = post.imageUrl 
+    ? transformDriveUrl(post.imageUrl, 'image') 
+    : (post.videoUrl ? transformDriveUrl(post.videoUrl, 'thumbnail') : '');
+  const safeVideoUrl = post.videoUrl ? transformDriveUrl(post.videoUrl, 'video') : '';
 
   useEffect(() => {
     const unsubscribe = postService.subscribeToComments(post.id, (fetchedComments) => {

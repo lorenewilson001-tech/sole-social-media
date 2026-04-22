@@ -119,7 +119,7 @@ export const EditPostModal: React.FC<EditPostModalProps> = ({ post, onClose, onU
                 {videoUrl ? (
                   videoUrl.includes('drive.google.com') ? (
                     <iframe 
-                      src={transformDriveUrl(videoUrl, true)} 
+                      src={transformDriveUrl(videoUrl, 'video')} 
                       className="w-full h-full border-none"
                       allow="autoplay"
                     />
@@ -127,7 +127,7 @@ export const EditPostModal: React.FC<EditPostModalProps> = ({ post, onClose, onU
                     <video src={videoUrl} className="w-full h-full object-contain" controls />
                   )
                 ) : (
-                  <img src={transformDriveUrl(imageUrl)} alt="Preview" className="w-full h-full object-cover" />
+                  <img src={transformDriveUrl(imageUrl, 'image')} alt="Preview" className="w-full h-full object-cover" />
                 )}
                 <div className="absolute top-2 right-2 bg-brand-red px-2 py-1 rounded text-[8px] font-black text-white uppercase tracking-tighter">
                   Media Preview
