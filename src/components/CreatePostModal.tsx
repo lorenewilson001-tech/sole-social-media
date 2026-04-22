@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Image as ImageIcon, Video, Send, Loader2 } from 'lucide-react';
 import { postService, transformDriveUrl } from '../services/postService';
 import { LOREN_EMAILS } from '../lib/firebase';
+import { sendAutomatedEmail } from '../services/emailService';
 
 interface CreatePostModalProps {
   onClose: () => void;
@@ -39,13 +40,21 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose }) => 
         // Trigger notification to Client
         const subject = `New Content Draft: ${title}`;
         const message = `Hello Loren! I have just uploaded a new content draft for you: "${title}".\n\nPlease review it here: ${window.location.origin}/?view=client\n\nCaption: ${caption}`;
-        const bccList = LOREN_EMAILS.join(',');
-        const mailtoUrl = `mailto:${LOREN_EMAILS[0]}?bcc=${bccList}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
         
-        window.location.href = mailtoUrl;
+        try {
+          await sendAutomatedEmail({
+            to: LOREN_EMAILS[0],
+            bcc: LOREN_EMAILS.slice(1),
+            subject,
+            message
+          });
+          alert('Post Published! Email notification sent to Chef Loren.');
+        } catch (emailErr) {
+          console.error('Email error:', emailErr);
+          alert('Post Published! (However, automated email failed - check your Resend API Key)');
+        }
         
         onClose();
-        alert('Post Published! Email notification initialized.');
       }
     } catch (error) {
       console.error(error);

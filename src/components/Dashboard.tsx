@@ -4,6 +4,7 @@ import { Plus, LayoutGrid, LogOut, User, Fingerprint, Share2, Copy, Check } from
 import { auth, JANNAT_EMAILS, LOREN_EMAILS, CREATOR_NAME, CLIENT_NAME, CREATOR_IMAGE, CLIENT_IMAGE } from '../lib/firebase';
 import { Post } from '../types';
 import { postService } from '../services/postService';
+import { sendAutomatedEmail } from '../services/emailService';
 import { PostCard } from './PostCard';
 import { PostDetails } from './PostDetails';
 import { CreatePostModal } from './CreatePostModal';
@@ -52,15 +53,23 @@ export const Dashboard: React.FC = () => {
 
   const currentPosts = getFilteredPosts();
 
-  const handleShare = (post: Post) => {
+  const handleShare = async (post: Post) => {
     const isResubmit = post.status === 'revision';
     const subject = isResubmit ? `RESUBMITTED: ${post.title}` : `New Content Draft: ${post.title}`;
     const message = `Hello Loren! This is ${CREATOR_NAME} from The Sole Ingredient. \n\nI have ${isResubmit ? 'updated' : 'finished'} a draft for you: "${post.title}". \n\nPlease review and approve it at our portal: ${window.location.origin}`;
     
-    // Multi-email logic: Send to all 3 emails via BCC
-    const bccList = LOREN_EMAILS.join(',');
-    const mailtoUrl = `mailto:${LOREN_EMAILS[0]}?bcc=${bccList}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
-    window.location.href = mailtoUrl;
+    try {
+      await sendAutomatedEmail({
+        to: LOREN_EMAILS[0],
+        bcc: LOREN_EMAILS.slice(1),
+        subject,
+        message
+      });
+      alert('Notification sent to Chef Loren successfully!');
+    } catch (err) {
+      console.error('Manual share fail:', err);
+      alert('Failed to send notification automatically. Please check your Resend API Key.');
+    }
   };
 
   return (

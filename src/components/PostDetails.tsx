@@ -4,6 +4,7 @@ import { X, Send, CheckCircle2, AlertCircle, Clock, ExternalLink, MessageSquare,
 import { Post, Comment } from '../types';
 import { postService, transformDriveUrl } from '../services/postService';
 import { auth, CREATOR_NAME, CLIENT_NAME, JANNAT_EMAILS, LOREN_EMAILS } from '../lib/firebase';
+import { sendAutomatedEmail } from '../services/emailService';
 import { EditPostModal } from './EditPostModal';
 
 interface PostDetailsProps {
@@ -52,16 +53,24 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
         // Client commented -> Notify Jannat
         const subject = `Feedback from Chef Loren - ${post.title}`;
         const message = `Hello Jannat! Chef Loren just left feedback on "${post.title}":\n\n"${newComment}"\n\nPlease check the portal to respond: ${window.location.origin}`;
-        const bccList = JANNAT_EMAILS.join(',');
-        const mailtoUrl = `mailto:${JANNAT_EMAILS[0]}?bcc=${bccList}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
-        window.location.href = mailtoUrl;
+        
+        sendAutomatedEmail({
+          to: JANNAT_EMAILS[0],
+          bcc: JANNAT_EMAILS.slice(1),
+          subject,
+          message
+        }).catch(err => console.error('Silent email fail on comment:', err));
       } else {
         // Creator (Jannat) commented -> Notify Chef Loren
         const subject = `Update from Jannat - ${post.title}`;
         const message = `Hi Chef Loren!\n\nJannat has responded to your feedback on "${post.title}":\n\n"${newComment}"\n\nYou can review it here: ${window.location.origin}/?view=client`;
-        const bccList = LOREN_EMAILS.join(',');
-        const mailtoUrl = `mailto:${LOREN_EMAILS[0]}?bcc=${bccList}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
-        window.location.href = mailtoUrl;
+        
+        sendAutomatedEmail({
+          to: LOREN_EMAILS[0],
+          bcc: LOREN_EMAILS.slice(1),
+          subject,
+          message
+        }).catch(err => console.error('Silent email fail on comment:', err));
       }
       
       setNewComment('');
@@ -82,9 +91,12 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
           ? `Hello Jannat! Good news! I have APPROVED the post: "${post.title}". \n\nYou can now proceed with scheduling. Congrats!`
           : `Hello Jannat, I have reviewed "${post.title}" and requested some revisions. Please check my comments in the portal.`;
         
-        const bccList = JANNAT_EMAILS.join(',');
-        const mailtoUrl = `mailto:${JANNAT_EMAILS[0]}?bcc=${bccList}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
-        window.location.href = mailtoUrl;
+        sendAutomatedEmail({
+          to: JANNAT_EMAILS[0],
+          bcc: JANNAT_EMAILS.slice(1),
+          subject,
+          message
+        }).catch(err => console.error('Silent email fail on status change:', err));
       }
     } catch (error) {
       console.error(error);
