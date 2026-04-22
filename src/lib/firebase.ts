@@ -11,15 +11,12 @@ export const storage = getStorage(app);
 export const googleProvider = new GoogleAuthProvider();
 
 export const JANNAT_EMAILS = [
-  'jannatunneyeem@gmail.com', 
-  'soleingredient@gmail.com', 
-  'jannatunneyeem6@gmail.com'
+  'jannat.outsource@gmail.com'
 ]; 
 
 export const LOREN_EMAILS = [
   'lorenewilson001@gmail.com', 
-  'gloccommun@gmail.com', 
-  'thesoleingredient@gmail.com'
+  'gloccommun@gmail.com'
 ]; 
 
 export const CREATOR_NAME = 'Jannatun Neyeem';

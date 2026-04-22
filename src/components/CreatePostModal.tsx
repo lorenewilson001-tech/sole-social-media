@@ -22,16 +22,20 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose }) => 
 
     setIsSubmitting(true);
     try {
-      await postService.createPost({
+      const result = await postService.createPost({
         title,
         imageUrl,
-        videoUrl: videoUrl.trim() || undefined,
+        videoUrl: videoUrl.trim() || '',
         caption,
         clientEmail: clientEmail.toLowerCase().trim()
       });
-      onClose();
+      if (result) {
+        onClose();
+        alert('Post Published Successfully!');
+      }
     } catch (error) {
       console.error(error);
+      alert('Failed to publish post. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
