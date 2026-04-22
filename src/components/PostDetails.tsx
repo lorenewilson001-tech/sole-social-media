@@ -171,8 +171,10 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
             </button>
           </div>
 
-          {/* Caption & Status Area */}
-          <div className="p-6 border-b border-white/5 bg-brand-card/20">
+          {/* Scrollable Content Area (Caption + Comments) */}
+          <div className="flex-1 overflow-y-auto custom-scrollbar bg-brand-dark/20">
+            {/* Caption & Status Area */}
+            <div className="p-6 border-b border-white/5 bg-brand-card/20">
             <div className="flex items-center justify-between mb-4">
                <div className="flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black border border-white/10 bg-white/5 uppercase tracking-wider">
                   {post.status === 'pending' && <Clock size={12} className="text-amber-500" />}
@@ -185,7 +187,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
                 </div>
             </div>
             
-            <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap max-h-32 overflow-y-auto custom-scrollbar italic font-medium mb-6">
+            <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap italic font-medium mb-6">
               "{post.caption}"
             </p>
 
@@ -220,10 +222,10 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
                 </button>
               </div>
             )}
-          </div>
+            </div>
 
-          {/* Comments Section */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-brand-dark/30 custom-scrollbar">
+            {/* Comments Section */}
+            <div className="p-6 space-y-6">
             <AnimatePresence initial={false}>
               {comments.map((comment) => (
                 <motion.div
@@ -255,6 +257,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
                 <p className="text-xs font-black uppercase tracking-widest">No Feedback Yet</p>
               </div>
             )}
+          </div>
           </div>
 
           {/* Comment Input */}
