@@ -22,8 +22,8 @@ export const LOREN_EMAILS = [
 export const CREATOR_NAME = 'Jannatun Neyeem';
 export const CLIENT_NAME = 'Loren';
 
-export const CREATOR_IMAGE = 'https://i.postimg.cc/853WNpBX/Photo-1.jpg'; // Jannat's Image
-export const CLIENT_IMAGE = 'https://i.postimg.cc/9fg7fCHV/R-100376.jpg'; // Loren's Image
+export const CREATOR_IMAGE = 'https://i.postimg.cc/9fg7fCHV/R-100376.jpg'; // Jannat's Image
+export const CLIENT_IMAGE = 'https://i.postimg.cc/853WNpBX/Photo-1.jpg'; // Loren's Image
 
 export const signInWithGoogle = async () => {
   try {
