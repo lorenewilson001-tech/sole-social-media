@@ -77,32 +77,34 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose }) => 
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Thumbnail Link</label>
+                <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Thumbnail Link (.jpg/.png)</label>
                 <div className="relative">
                   <input
                     required
                     type="url"
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}
-                    placeholder="Direct image link"
+                    placeholder="Use ImgBB or Direct Link"
                     className="w-full bg-brand-dark/50 border border-white/10 text-white rounded-xl py-3 pl-10 pr-4 focus:outline-none focus:border-brand-gold transition-all text-xs font-medium"
                   />
                   <ImageIcon className="absolute left-3.5 top-3.5 text-slate-500" size={16} />
                 </div>
+                <p className="text-[9px] text-brand-gold/60 italic ml-1">*Don't use Google Drive/Google Photos links.</p>
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Video Link (Optional)</label>
+                <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Video Link (Direct .mp4)</label>
                 <div className="relative">
                   <input
                     type="url"
                     value={videoUrl}
                     onChange={(e) => setVideoUrl(e.target.value)}
-                    placeholder="Direct .mp4 link"
+                    placeholder="Direct video link"
                     className="w-full bg-brand-dark/50 border border-white/10 text-white rounded-xl py-3 pl-10 pr-4 focus:outline-none focus:border-brand-gold transition-all text-xs font-medium"
                   />
                   <Video className="absolute left-3.5 top-3.5 text-slate-500" size={16} />
                 </div>
+                <p className="text-[9px] text-slate-500 italic ml-1">Example: https://site.com/video.mp4</p>
               </div>
             </div>
 
