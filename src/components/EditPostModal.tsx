@@ -76,7 +76,7 @@ export const EditPostModal: React.FC<EditPostModalProps> = ({ post, onClose, onU
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Thumbnail Link (Drive or Direct)</label>
+                <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Image Link (Drive or Direct)</label>
                 <div className="relative">
                   <input
                     required
@@ -85,7 +85,7 @@ export const EditPostModal: React.FC<EditPostModalProps> = ({ post, onClose, onU
                     onChange={(e) => setImageUrl(e.target.value)}
                     placeholder="Paste link here..."
                     className="w-full bg-brand-dark/50 border border-white/10 text-white rounded-xl py-3 pl-10 pr-4 focus:outline-none focus:border-brand-gold transition-all text-xs font-medium"
-                  />
+                   />
                   <ImageIcon className="absolute left-3.5 top-3.5 text-slate-500" size={16} />
                 </div>
               </div>

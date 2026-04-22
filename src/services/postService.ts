@@ -41,7 +41,8 @@ const handleFirestoreError = (error: any, operationType: FirestoreErrorInfo['ope
 export const transformDriveUrl = (url: string): string => {
   if (!url) return url;
   if (url.includes('drive.google.com')) {
-    const match = url.match(/\/d\/(.+?)\/(?:view|edit|prev)/) || url.match(/id=(.+?)(?:&|$)/);
+    // Matches /d/ID/view, /d/ID/edit, or just /d/ID
+    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
     if (match && match[1]) {
       return `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }

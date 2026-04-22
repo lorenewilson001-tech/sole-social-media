@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { MessageSquare, CheckCircle2, Clock, AlertCircle, Video } from 'lucide-react';
 import { Post } from '../types';
+import { transformDriveUrl } from '../services/postService';
 
 interface PostCardProps {
   post: Post;
@@ -17,6 +18,8 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
 
   const { color, icon: Icon, label } = statusConfig[post.status] || statusConfig.pending;
 
+  const displayImageUrl = transformDriveUrl(post.imageUrl);
+
   return (
     <motion.div
       layoutId={post.id}
@@ -26,7 +29,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
     >
       <div className="aspect-square overflow-hidden bg-black relative">
         <img 
-          src={post.imageUrl} 
+          src={displayImageUrl} 
           alt={post.title} 
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80"
           referrerPolicy="no-referrer"
