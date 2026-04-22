@@ -10,8 +10,17 @@ export const auth = getAuth(app);
 export const storage = getStorage(app); 
 export const googleProvider = new GoogleAuthProvider();
 
-export const JANNAT_EMAILS = ['jannatunneyeem@gmail.com', 'soleingredient@gmail.com', 'jannat.work@example.com']; // Placeholders for Jannat's 3 emails
-export const LOREN_EMAILS = ['lorenewilson001@gmail.com', 'loren.client@example.com', 'loren.work@example.com']; // Placeholders for Loren's 3 emails
+export const JANNAT_EMAILS = [
+  'jannatunneyeem@gmail.com', 
+  'soleingredient@gmail.com', 
+  'jannatunneyeem6@gmail.com'
+]; 
+
+export const LOREN_EMAILS = [
+  'lorenewilson001@gmail.com', 
+  'gloccommun@gmail.com', 
+  'thesoleingredient@gmail.com'
+]; 
 
 export const CREATOR_NAME = 'Jannatun Neyeem';
 export const CLIENT_NAME = 'Loren';

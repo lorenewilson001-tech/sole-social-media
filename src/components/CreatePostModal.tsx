@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Image as ImageIcon, Video, Send, Loader2 } from 'lucide-react';
 import { postService } from '../services/postService';
+import { LOREN_EMAILS } from '../lib/firebase';
 
 interface CreatePostModalProps {
   onClose: () => void;
@@ -12,7 +13,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose }) => 
   const [imageUrl, setImageUrl] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
   const [caption, setCaption] = useState('');
-  const [clientEmail, setClientEmail] = useState('');
+  const [clientEmail, setClientEmail] = useState(LOREN_EMAILS[0]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
