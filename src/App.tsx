@@ -32,7 +32,7 @@ export default function App() {
 
   return (
     <>
-      {user ? <Dashboard /> : <Auth />}
+      <Dashboard />
     </>
   );
 }

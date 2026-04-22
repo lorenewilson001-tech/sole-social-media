@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Plus, LayoutGrid, LogOut, User, Fingerprint, Share2, Copy, Check } from 'lucide-react';
-import { auth, LOGO_URL, CREATOR_NAME } from '../lib/firebase';
+import { auth, JANNAT_EMAILS, LOREN_EMAILS, CREATOR_NAME, CLIENT_NAME, CREATOR_IMAGE, CLIENT_IMAGE } from '../lib/firebase';
 import { Post } from '../types';
 import { postService } from '../services/postService';
 import { PostCard } from './PostCard';
@@ -13,16 +13,15 @@ export const Dashboard: React.FC = () => {
   const [clientPosts, setClientPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isAddingPost, setIsAddingPost] = useState(false);
-  const [activeTab, setActiveTab] = useState<'creator' | 'client'>('creator');
+  const [activeTab, setActiveTab] = useState<'creator' | 'client' | 'approved'>('creator');
   const [copiedId, setCopiedId] = useState(false);
 
   useEffect(() => {
     const unsubscribeCreator = postService.subscribeToPosts(setPosts);
     let unsubscribeClient = () => {};
     
-    if (auth.currentUser && auth.currentUser.email) {
-      unsubscribeClient = postService.subscribeToClientPosts(auth.currentUser.email, setClientPosts);
-    }
+    // Auto-subscribe if no user to ensure data shows up instantly
+    unsubscribeClient = postService.subscribeToClientPosts(LOREN_EMAILS[0], setClientPosts);
 
     return () => {
       unsubscribeCreator();
@@ -32,11 +31,35 @@ export const Dashboard: React.FC = () => {
 
   const handleLogout = () => auth.signOut();
 
-  const currentPosts = activeTab === 'creator' ? posts : clientPosts;
+  const getFilteredPosts = () => {
+    if (activeTab === 'approved') {
+      // Show all approved posts regardless of creator or client
+      const allPosts = [...posts, ...clientPosts];
+      const uniqueApproved = allPosts
+        .filter(p => p.status === 'approved')
+        .reduce((acc, current) => {
+          const x = acc.find(item => item.id === current.id);
+          if (!x) {
+            return acc.concat([current]);
+          } else {
+            return acc;
+          }
+        }, [] as Post[]);
+      return uniqueApproved.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+    }
+    return activeTab === 'creator' ? posts : clientPosts;
+  };
+
+  const currentPosts = getFilteredPosts();
 
   const handleShare = (post: Post) => {
-    const message = `Hello! This is ${CREATOR_NAME} from The Sole Ingredient. \n\nI have finished a new post draft "${post.title}" for your review. Please click the link below to approve or leave feedback. \n\nPortal link: ${window.location.origin}`;
-    const mailtoUrl = `mailto:${post.clientEmail}?subject=Approval Request: ${post.title}&body=${encodeURIComponent(message)}`;
+    const isResubmit = post.status === 'revision';
+    const subject = isResubmit ? `RESUBMITTED: ${post.title}` : `New Content Draft: ${post.title}`;
+    const message = `Hello Loren! This is ${CREATOR_NAME} from The Sole Ingredient. \n\nI have ${isResubmit ? 'updated' : 'finished'} a draft for you: "${post.title}". \n\nPlease review and approve it at our portal: ${window.location.origin}`;
+    
+    // Multi-email logic: Send to all 3 emails via BCC
+    const bccList = LOREN_EMAILS.join(',');
+    const mailtoUrl = `mailto:${LOREN_EMAILS[0]}?bcc=${bccList}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
     window.location.href = mailtoUrl;
   };
 
@@ -58,30 +81,48 @@ export const Dashboard: React.FC = () => {
             <div className="hidden md:flex bg-brand-card/50 rounded-xl p-1 border border-white/5">
               <button
                 onClick={() => setActiveTab('creator')}
-                className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${
-                  activeTab === 'creator' ? 'bg-brand-red text-white shadow-lg' : 'text-slate-400 hover:text-brand-orange'
+                className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${
+                  activeTab === 'creator' ? 'bg-brand-red text-white shadow-lg' : 'text-slate-500 hover:text-brand-orange'
                 }`}
               >
                 Creator Panel
               </button>
               <button
                 onClick={() => setActiveTab('client')}
-                className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${
-                  activeTab === 'client' ? 'bg-brand-red text-white shadow-lg' : 'text-slate-400 hover:text-brand-orange'
+                className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${
+                  activeTab === 'client' ? 'bg-brand-red text-white shadow-lg' : 'text-slate-500 hover:text-brand-orange'
                 }`}
               >
                 Client Portal
+              </button>
+              <button
+                onClick={() => setActiveTab('approved')}
+                className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${
+                  activeTab === 'approved' ? 'bg-brand-gold text-brand-dark shadow-lg' : 'text-slate-500 hover:text-brand-orange'
+                }`}
+              >
+                Approved Posts
               </button>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
             <div className="hidden lg:flex flex-col items-end mr-2">
-              <span className="text-sm font-bold text-slate-200">{auth.currentUser?.displayName}</span>
-              <span className="text-[10px] text-brand-orange font-mono italic">Sole Artist</span>
+              <span className="text-sm font-black text-slate-100 uppercase tracking-tighter">
+                {activeTab === 'creator' ? CREATOR_NAME : CLIENT_NAME}
+              </span>
+              <span className="text-[10px] text-brand-orange font-bold uppercase italic tracking-widest leading-none">
+                {activeTab === 'creator' ? 'Sole Artist' : 'Verified Client'}
+              </span>
             </div>
-            <div className="w-10 h-10 rounded-full bg-slate-800 border-2 border-brand-red overflow-hidden shadow-lg">
-              <img src={auth.currentUser?.photoURL || ''} alt="Profile" className="w-full h-full object-cover" crossOrigin="anonymous" />
+            <div className="w-12 h-12 rounded-2xl bg-brand-card border-2 border-brand-red overflow-hidden shadow-[4px_4px_0px_theme(colors.brand-gold)] transform hover:rotate-3 transition-transform">
+              <img 
+                src={activeTab === 'creator' ? CREATOR_IMAGE : CLIENT_IMAGE} 
+                alt="Profile" 
+                className="w-full h-full object-cover" 
+                crossOrigin="anonymous" 
+                referrerPolicy="no-referrer"
+              />
             </div>
             <button 
               onClick={handleLogout}
@@ -97,27 +138,33 @@ export const Dashboard: React.FC = () => {
       <main className="max-w-7xl mx-auto px-4 py-8">
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 bg-brand-card/30 p-8 rounded-3xl border border-white/5 shadow-inner">
           <div className="flex-1">
-            <h1 className="text-5xl font-extrabold tracking-tighter mb-4">
+            <h1 className="text-5xl font-extrabold tracking-tighter mb-4 uppercase">
               {activeTab === 'creator' ? (
                 <>
-                  <span className="text-brand-red">Creator</span> Workflow
+                  <span className="text-brand-red">Creator</span> Panel
+                </>
+              ) : activeTab === 'client' ? (
+                <>
+                  <span className="text-brand-gold">Client</span> Portal
                 </>
               ) : (
                 <>
-                  <span className="text-brand-gold">Client</span> Dashboard
+                  <span className="text-emerald-500">Approved</span> Posts
                 </>
               )}
             </h1>
-            <p className="text-slate-400 max-w-lg leading-relaxed text-lg">
+            <p className="text-slate-400 max-w-lg leading-relaxed text-lg italic">
               {activeTab === 'creator' 
                 ? 'Manage your catering content, track client approvals, and ensure every post is fire.' 
-                : 'Review your custom catering content drafts from the artist.'}
+                : activeTab === 'client'
+                ? 'Review your custom catering content drafts from the artist.'
+                : 'Your high-performance social content, approved and ready for the world.'}
             </p>
           </div>
           {activeTab === 'creator' && (
             <button
               onClick={() => setIsAddingPost(true)}
-              className="flex items-center justify-center gap-2 bg-brand-red hover:bg-brand-orange text-white font-bold px-10 py-5 rounded-xl transition-all shadow-[6px_6px_0px_rgba(0,0,0,0.5),4px_4px_0px_theme(colors.brand-gold)] active:translate-y-1 active:shadow-none whitespace-nowrap border border-white/10"
+              className="flex items-center justify-center gap-2 bg-brand-red hover:bg-brand-orange text-white font-black uppercase tracking-widest px-10 py-5 rounded-xl transition-all shadow-[6px_6px_0px_rgba(0,0,0,0.5),4px_4px_0px_theme(colors.brand-gold)] active:translate-y-1 active:shadow-none whitespace-nowrap border border-white/10"
             >
               <Plus size={24} />
               Create Project
@@ -127,22 +174,30 @@ export const Dashboard: React.FC = () => {
 
 
         {/* Mobile Tab Switcher */}
-        <div className="md:hidden flex bg-white/5 rounded-2xl p-1 mb-8 border border-white/5">
+        <div className="md:hidden flex bg-brand-card/50 rounded-2xl p-1 mb-8 border border-white/5 shadow-lg">
           <button
             onClick={() => setActiveTab('creator')}
-            className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${
-              activeTab === 'creator' ? 'bg-brand-red text-white' : 'text-slate-400'
+            className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+              activeTab === 'creator' ? 'bg-brand-red text-white shadow-md' : 'text-slate-500'
             }`}
           >
             Creator
           </button>
           <button
             onClick={() => setActiveTab('client')}
-            className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${
-              activeTab === 'client' ? 'bg-brand-red text-white' : 'text-slate-400'
+            className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+              activeTab === 'client' ? 'bg-brand-red text-white shadow-md' : 'text-slate-500'
             }`}
           >
             Client
+          </button>
+          <button
+            onClick={() => setActiveTab('approved')}
+            className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+              activeTab === 'approved' ? 'bg-brand-gold text-brand-dark shadow-md' : 'text-slate-500'
+            }`}
+          >
+            Approved
           </button>
         </div>
 

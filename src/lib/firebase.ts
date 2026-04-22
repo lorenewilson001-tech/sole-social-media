@@ -8,9 +8,14 @@ export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 
-export const LOGO_URL = 'https://ais-pre-vw3ncz5aiqua3kthchcfke-864923380925.asia-southeast1.run.app/logo.png'; // Placeholder for user upload
+export const JANNAT_EMAILS = ['jannatunneyeem@gmail.com', 'soleingredient@gmail.com', 'jannat.work@example.com']; // Placeholders for Jannat's 3 emails
+export const LOREN_EMAILS = ['lorenewilson001@gmail.com', 'loren.client@example.com', 'loren.work@example.com']; // Placeholders for Loren's 3 emails
+
 export const CREATOR_NAME = 'Jannatun Neyeem';
-export const CREATOR_EMAIL = 'lorenewilson001@gmail.com';
+export const CLIENT_NAME = 'Loren';
+
+export const CREATOR_IMAGE = 'https://cdn.perceptual.ai/ais/vw3ncz5aiqua3kthchcfke-864923380925-1745338830113-logo.jpg'; // Using your logo or a placeholder image for Jannat
+export const CLIENT_IMAGE = 'https://ui-avatars.com/api/?name=Loren&background=a68a56&color=fff'; // Placeholder for Loren
 
 export const signInWithGoogle = async () => {
   try {

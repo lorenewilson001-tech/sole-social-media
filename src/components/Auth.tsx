@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { LogIn } from 'lucide-react';
-import { signInWithGoogle, LOGO_URL, CREATOR_NAME } from '../lib/firebase';
+import { signInWithGoogle, CREATOR_NAME } from '../lib/firebase';
 
 export const Auth: React.FC = () => {
+  const [error, setError] = useState<string | null>(null);
+
   const handleLogin = async () => {
+    setError(null);
     try {
       await signInWithGoogle();
-    } catch (error) {
-      console.error("Login failed", error);
+    } catch (err: any) {
+      console.error("Login failed", err);
+      if (err.code === 'auth/popup-blocked') {
+        setError('Login popup was blocked. Please allow popups or try opening the app in a new tab.');
+      } else {
+        setError('Login failed. Please make sure you are using a valid Google account or try refreshing.');
+      }
     }
   };
 
@@ -35,6 +43,11 @@ export const Auth: React.FC = () => {
           <p className="text-brand-orange text-center font-medium italic">By {CREATOR_NAME}</p>
         </div>
 
+        {error && (
+          <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-rose-400 font-bold text-center animate-shake">
+            {error}
+          </div>
+        )}
 
         <button
           onClick={handleLogin}

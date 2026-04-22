@@ -21,35 +21,38 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
     <motion.div
       layoutId={post.id}
       onClick={() => onClick(post)}
-      whileHover={{ y: -4 }}
-      className="group bg-slate-900 border border-white/5 rounded-2xl overflow-hidden cursor-pointer hover:border-white/10 transition-all shadow-xl"
+      whileHover={{ y: -6 }}
+      className="group bg-brand-card border border-white/5 rounded-2xl overflow-hidden cursor-pointer hover:border-brand-gold/30 transition-all shadow-[8px_8px_0px_rgba(0,0,0,0.3)] hover:shadow-[12px_12px_0px_rgba(0,0,0,0.5)] active:translate-y-1 active:shadow-none"
     >
-      <div className="aspect-square overflow-hidden bg-slate-800 relative">
+      <div className="aspect-square overflow-hidden bg-black relative">
         <img 
           src={post.imageUrl} 
           alt={post.title} 
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           referrerPolicy="no-referrer"
         />
         <div className="absolute top-3 right-3">
-          <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border backdrop-blur-md ${color}`}>
+          <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border backdrop-blur-md ${color}`}>
             <Icon className="w-3 h-3" />
             {label}
           </div>
         </div>
       </div>
-      <div className="p-4">
-        <h3 className="text-white font-semibold mb-1 truncate">{post.title}</h3>
-        <p className="text-slate-400 text-sm line-clamp-2 mb-4 leading-relaxed h-10">
-          {post.caption}
+      <div className="p-5">
+        <h3 className="text-white font-bold mb-1 truncate uppercase tracking-tight">{post.title}</h3>
+        <span className="text-[9px] text-brand-orange font-bold uppercase tracking-widest block mb-3">
+          Sent: {post.createdAt?.toDate()?.toLocaleDateString() || 'Recently'}
+        </span>
+        <p className="text-slate-400 text-xs line-clamp-2 mb-4 leading-relaxed h-8 italic">
+          "{post.caption}"
         </p>
-        <div className="flex items-center justify-between pt-4 border-t border-white/5">
-          <div className="flex items-center gap-1 text-slate-500 text-xs">
-            <MessageSquare className="w-3.5 h-3.5" />
-            <span>Comments</span>
+        <div className="flex items-center justify-between pt-4 border-t border-brand-dark">
+          <div className="flex items-center gap-1.5 text-slate-500 text-[10px] font-bold uppercase tracking-tighter">
+            <MessageSquare className="w-3.5 h-3.5 text-brand-gold" />
+            <span>Collaboration</span>
           </div>
-          <span className="text-[10px] text-slate-600 font-mono">
-            ID: {post.id.slice(0, 8)}
+          <span className="text-[10px] text-slate-700 font-mono">
+            #{post.id.slice(0, 4).toUpperCase()}
           </span>
         </div>
       </div>
