@@ -191,7 +191,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
               "{post.caption}"
             </p>
 
-            {isClientView && (
+            {isClientView ? (
               <div className="flex items-center justify-around py-4 border-t border-b border-white/5">
                 <button
                   onClick={() => post.status !== 'approved' && handleStatusChange('approved')}
@@ -219,6 +219,16 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
                 >
                   <Share2 size={16} />
                   Feedback
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center py-4 border-t border-b border-white/5">
+                <button
+                  onClick={() => alert('Editing feature coming up! You will be able to update title, image and caption here.')}
+                  className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-brand-gold hover:text-brand-red transition-all bg-white/5 px-6 py-2 rounded-xl border border-brand-gold/20"
+                >
+                  <Plus size={16} className="rotate-45" />
+                  Edit Post Content
                 </button>
               </div>
             )}

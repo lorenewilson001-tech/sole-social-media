@@ -77,15 +77,25 @@ export const postService = {
     }
   },
 
-  async updatePostStatus(postId: string, status: PostStatus) {
+  async updatePost(postId: string, data: Partial<Post>) {
+    const sanitizedData: any = {
+      ...data,
+      updatedAt: serverTimestamp()
+    };
+    
+    if (data.imageUrl) sanitizedData.imageUrl = transformDriveUrl(data.imageUrl);
+    if (data.videoUrl) sanitizedData.videoUrl = transformDriveUrl(data.videoUrl);
+
     try {
-      await updateDoc(doc(db, 'posts', postId), {
-        status,
-        updatedAt: serverTimestamp()
-      });
+      await updateDoc(doc(db, 'posts', postId), sanitizedData);
+      return true;
     } catch (e) {
       handleFirestoreError(e, 'update', `posts/${postId}`);
     }
+  },
+
+  async updatePostStatus(postId: string, status: PostStatus) {
+    return this.updatePost(postId, { status });
   },
 
   async updatePostContent(postId: string, data: Partial<Pick<Post, 'title' | 'imageUrl' | 'caption'>>) {
