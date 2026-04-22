@@ -38,13 +38,32 @@ const handleFirestoreError = (error: any, operationType: FirestoreErrorInfo['ope
   throw new Error(JSON.stringify(errorInfo));
 };
 
+export const transformDriveUrl = (url: string): string => {
+  if (!url) return url;
+  if (url.includes('drive.google.com')) {
+    const match = url.match(/\/d\/(.+?)\/(?:view|edit|prev)/) || url.match(/id=(.+?)(?:&|$)/);
+    if (match && match[1]) {
+      return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    }
+  }
+  return url;
+};
+
 export const postService = {
   async createPost(data: Omit<Post, 'id' | 'createdAt' | 'updatedAt' | 'authorId' | 'status'>) {
     // If not authenticated, we use a fixed ID for Jannat's workflow
     const authorId = auth.currentUser?.uid || 'jannat-creator-id';
     const id = doc(collection(db, 'posts')).id;
-    const postData = {
+    
+    // Transform Drive links for compatibility
+    const sanitizedData = {
       ...data,
+      imageUrl: transformDriveUrl(data.imageUrl),
+      videoUrl: data.videoUrl ? transformDriveUrl(data.videoUrl) : ''
+    };
+
+    const postData = {
+      ...sanitizedData,
       authorId,
       status: 'pending' as PostStatus,
       createdAt: serverTimestamp(),
