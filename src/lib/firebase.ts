@@ -16,8 +16,8 @@ export const LOREN_EMAILS = ['lorenewilson001@gmail.com', 'loren.client@example.
 export const CREATOR_NAME = 'Jannatun Neyeem';
 export const CLIENT_NAME = 'Loren';
 
-export const CREATOR_IMAGE = 'https://cdn.perceptual.ai/ais/vw3ncz5aiqua3kthchcfke-864923380925-1745338830113-logo.jpg'; // Using your logo or a placeholder image for Jannat
-export const CLIENT_IMAGE = 'https://ui-avatars.com/api/?name=Loren&background=a68a56&color=fff'; // Placeholder for Loren
+export const CREATOR_IMAGE = 'https://i.postimg.cc/9fg7fCHV/R-100376.jpg'; // Jannat's Image
+export const CLIENT_IMAGE = 'https://i.postimg.cc/853WNpBX/Photo-1.jpg'; // Loren's Image
 
 export const signInWithGoogle = async () => {
   try {
