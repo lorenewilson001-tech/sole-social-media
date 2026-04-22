@@ -19,13 +19,17 @@ export const EditPostModal: React.FC<EditPostModalProps> = ({ post, onClose, onU
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !imageUrl) return;
+    if (!title) return;
+    if (!imageUrl.trim() && !videoUrl.trim()) {
+      alert('Please provide at least an Image Link or a Video Link.');
+      return;
+    }
 
     setIsSubmitting(true);
     try {
       const success = await postService.updatePost(post.id, {
         title,
-        imageUrl,
+        imageUrl: imageUrl.trim() || '',
         videoUrl: videoUrl.trim() || '',
         caption
       });
@@ -79,7 +83,6 @@ export const EditPostModal: React.FC<EditPostModalProps> = ({ post, onClose, onU
                 <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Image Link (Drive or Direct)</label>
                 <div className="relative">
                   <input
-                    required
                     type="url"
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}

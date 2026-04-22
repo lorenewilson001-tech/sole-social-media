@@ -18,7 +18,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
 
   const { color, icon: Icon, label } = statusConfig[post.status] || statusConfig.pending;
 
-  const displayImageUrl = transformDriveUrl(post.imageUrl);
+  const displayImageUrl = post.imageUrl ? transformDriveUrl(post.imageUrl) : '';
 
   return (
     <motion.div
@@ -28,12 +28,18 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
       className="group bg-brand-card border border-white/5 rounded-2xl overflow-hidden cursor-pointer hover:border-brand-gold/30 transition-all shadow-[8px_8px_0px_rgba(0,0,0,0.3)] hover:shadow-[12px_12px_0px_rgba(0,0,0,0.5)] active:translate-y-1 active:shadow-none"
     >
       <div className="aspect-square overflow-hidden bg-black relative">
-        <img 
-          src={displayImageUrl} 
-          alt={post.title} 
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-          referrerPolicy="no-referrer"
-        />
+        {displayImageUrl ? (
+          <img 
+            src={displayImageUrl} 
+            alt={post.title} 
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            referrerPolicy="no-referrer"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-brand-dark/50">
+            <Video className="w-12 h-12 text-slate-700 opacity-20" />
+          </div>
+        )}
         {post.videoUrl && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="bg-brand-red/80 p-3 rounded-full shadow-2xl group-hover:scale-125 transition-transform border border-white/20">

@@ -22,9 +22,15 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose }) => 
 
     setIsSubmitting(true);
     try {
+      if (!imageUrl.trim() && !videoUrl.trim()) {
+        alert('Please provide at least an Image Link or a Video Link.');
+        setIsSubmitting(false);
+        return;
+      }
+      
       const result = await postService.createPost({
         title,
-        imageUrl,
+        imageUrl: imageUrl.trim() || '',
         videoUrl: videoUrl.trim() || '',
         caption,
         clientEmail: clientEmail.toLowerCase().trim()
@@ -80,7 +86,6 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose }) => 
                 <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Image Link (Drive or Direct)</label>
                 <div className="relative">
                   <input
-                    required
                     type="url"
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}

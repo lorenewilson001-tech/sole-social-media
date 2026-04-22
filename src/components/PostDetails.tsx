@@ -19,7 +19,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
   const [isEditing, setIsEditing] = useState(false);
 
   // Helper to ensure URLs are always "web-ready"
-  const safeImageUrl = transformDriveUrl(post.imageUrl);
+  const safeImageUrl = post.imageUrl ? transformDriveUrl(post.imageUrl) : '';
   const safeVideoUrl = post.videoUrl ? transformDriveUrl(post.videoUrl) : '';
 
   useEffect(() => {

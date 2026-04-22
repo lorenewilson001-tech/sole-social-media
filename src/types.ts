@@ -3,7 +3,7 @@ export type PostStatus = 'pending' | 'approved' | 'revision';
 export interface Post {
   id: string;
   title: string;
-  imageUrl: string;
+  imageUrl?: string;
   videoUrl?: string;
   caption: string;
   status: PostStatus;
