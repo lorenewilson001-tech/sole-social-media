@@ -41,12 +41,20 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
       const authorName = isClientView ? `Chef ${CLIENT_NAME}` : CREATOR_NAME;
       await postService.addComment(post.id, newComment.trim(), authorName);
       
-      // If client sends a comment, notify Jannat's 3 emails
+      // Notify the "opposite" person
       if (isClientView) {
+        // Client commented -> Notify Jannat
         const subject = `Feedback from Chef Loren - ${post.title}`;
         const message = `Hello Jannat! Chef Loren just left feedback on "${post.title}":\n\n"${newComment}"\n\nPlease check the portal to respond: ${window.location.origin}`;
         const bccList = JANNAT_EMAILS.join(',');
         const mailtoUrl = `mailto:${JANNAT_EMAILS[0]}?bcc=${bccList}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+        window.location.href = mailtoUrl;
+      } else {
+        // Creator (Jannat) commented -> Notify Chef Loren
+        const subject = `Update from Jannat - ${post.title}`;
+        const message = `Hi Chef Loren!\n\nJannat has responded to your feedback on "${post.title}":\n\n"${newComment}"\n\nYou can review it here: ${window.location.origin}/?view=client`;
+        const bccList = LOREN_EMAILS.join(',');
+        const mailtoUrl = `mailto:${LOREN_EMAILS[0]}?bcc=${bccList}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
         window.location.href = mailtoUrl;
       }
       
