@@ -4,6 +4,7 @@ import { X, Send, CheckCircle2, AlertCircle, Clock, ExternalLink, MessageSquare,
 import { Post, Comment } from '../types';
 import { postService } from '../services/postService';
 import { auth, CREATOR_NAME, CLIENT_NAME, JANNAT_EMAILS, LOREN_EMAILS } from '../lib/firebase';
+import { EditPostModal } from './EditPostModal';
 
 interface PostDetailsProps {
   post: Post;
@@ -15,6 +16,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const unsubscribe = postService.subscribeToComments(post.id, (fetchedComments) => {
@@ -224,7 +226,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
             ) : (
               <div className="flex items-center justify-center py-4 border-t border-b border-white/5">
                 <button
-                  onClick={() => alert('Editing feature coming up! You will be able to update title, image and caption here.')}
+                  onClick={() => setIsEditing(true)}
                   className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-brand-gold hover:text-brand-red transition-all bg-white/5 px-6 py-2 rounded-xl border border-brand-gold/20"
                 >
                   <Plus size={16} className="rotate-45" />
@@ -305,6 +307,16 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
           </form>
         </div>
       </motion.div>
+
+      <AnimatePresence>
+        {isEditing && (
+          <EditPostModal 
+            post={post} 
+            onClose={() => setIsEditing(false)} 
+            onUpdate={() => {}} 
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
