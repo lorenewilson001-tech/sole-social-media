@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Plus, LayoutGrid, LogOut, User, Fingerprint, Share2, Copy, Check } from 'lucide-react';
-import { auth } from '../lib/firebase';
+import { auth, LOGO_URL, CREATOR_NAME } from '../lib/firebase';
 import { Post } from '../types';
 import { postService } from '../services/postService';
 import { PostCard } from './PostCard';
 import { PostDetails } from './PostDetails';
 import { CreatePostModal } from './CreatePostModal';
-import { LOGO_URL, CREATOR_NAME } from './Auth';
 
 export const Dashboard: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -48,23 +47,19 @@ export const Dashboard: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-black rounded-xl flex items-center justify-center border border-brand-gold/30 shadow-[3px_3px_0px_theme(colors.brand-red)] p-1.5 cursor-pointer">
-                <img 
-                  src={LOGO_URL} 
-                  alt="Sole Ingredient" 
-                  className="w-full h-full object-contain rounded-md" 
-                  referrerPolicy="no-referrer"
-                  crossOrigin="anonymous"
-                />
+              <div className="w-14 h-14 bg-black rounded-xl flex items-center justify-center border border-brand-gold/30 shadow-[3px_3px_0px_theme(colors.brand-red)] p-1.5 cursor-pointer overflow-hidden">
+                <div className="flex flex-col items-center justify-center leading-none">
+                  <span className="text-2xl font-black text-brand-gold">S</span>
+                </div>
               </div>
-              <span className="text-2xl font-bold tracking-tighter hidden sm:block text-slate-100">Sole Ingredient</span>
+              <span className="text-2xl font-bold tracking-tighter hidden sm:block text-slate-100 uppercase">SOLE INGREDIENT</span>
             </div>
             
             <div className="hidden md:flex bg-brand-card/50 rounded-xl p-1 border border-white/5">
               <button
                 onClick={() => setActiveTab('creator')}
                 className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${
-                  activeTab === 'creator' ? 'bg-brand-red text-white shadow-lg' : 'text-slate-400 hover:text-white'
+                  activeTab === 'creator' ? 'bg-brand-red text-white shadow-lg' : 'text-slate-400 hover:text-brand-orange'
                 }`}
               >
                 Creator Panel
@@ -72,7 +67,7 @@ export const Dashboard: React.FC = () => {
               <button
                 onClick={() => setActiveTab('client')}
                 className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${
-                  activeTab === 'client' ? 'bg-brand-red text-white shadow-lg' : 'text-slate-400 hover:text-white'
+                  activeTab === 'client' ? 'bg-brand-red text-white shadow-lg' : 'text-slate-400 hover:text-brand-orange'
                 }`}
               >
                 Client Portal
@@ -83,7 +78,7 @@ export const Dashboard: React.FC = () => {
           <div className="flex items-center gap-4">
             <div className="hidden lg:flex flex-col items-end mr-2">
               <span className="text-sm font-bold text-slate-200">{auth.currentUser?.displayName}</span>
-              <span className="text-[10px] text-brand-gold font-mono italic">Sole Artist</span>
+              <span className="text-[10px] text-brand-orange font-mono italic">Sole Artist</span>
             </div>
             <div className="w-10 h-10 rounded-full bg-slate-800 border-2 border-brand-red overflow-hidden shadow-lg">
               <img src={auth.currentUser?.photoURL || ''} alt="Profile" className="w-full h-full object-cover" crossOrigin="anonymous" />
@@ -105,7 +100,7 @@ export const Dashboard: React.FC = () => {
             <h1 className="text-5xl font-extrabold tracking-tighter mb-4">
               {activeTab === 'creator' ? (
                 <>
-                  <span className="text-brand-terracotta">Creator</span> Workflow
+                  <span className="text-brand-red">Creator</span> Workflow
                 </>
               ) : (
                 <>
@@ -122,7 +117,7 @@ export const Dashboard: React.FC = () => {
           {activeTab === 'creator' && (
             <button
               onClick={() => setIsAddingPost(true)}
-              className="flex items-center justify-center gap-2 bg-brand-red hover:bg-red-700 text-white font-bold px-10 py-5 rounded-xl transition-all shadow-[6px_6px_0px_rgba(0,0,0,0.5),4px_4px_0px_theme(colors.brand-gold)] active:translate-y-1 active:shadow-none whitespace-nowrap border border-white/10"
+              className="flex items-center justify-center gap-2 bg-brand-red hover:bg-brand-orange text-white font-bold px-10 py-5 rounded-xl transition-all shadow-[6px_6px_0px_rgba(0,0,0,0.5),4px_4px_0px_theme(colors.brand-gold)] active:translate-y-1 active:shadow-none whitespace-nowrap border border-white/10"
             >
               <Plus size={24} />
               Create Project

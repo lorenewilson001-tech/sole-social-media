@@ -8,6 +8,10 @@ export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 
+export const LOGO_URL = 'https://ais-pre-vw3ncz5aiqua3kthchcfke-864923380925.asia-southeast1.run.app/logo.png'; // Placeholder for user upload
+export const CREATOR_NAME = 'Jannatun Neyeem';
+export const CREATOR_EMAIL = 'lorenewilson001@gmail.com';
+
 export const signInWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
@@ -17,6 +21,7 @@ export const signInWithGoogle = async () => {
     throw error;
   }
 };
+
 
 // Validate connection as per critical directive
 async function testConnection() {

@@ -2,11 +2,14 @@
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --color-brand-dark: #1c1514;
-  --color-brand-card: #261817;
-  --color-brand-red: #801818;
-  --color-brand-terracotta: #a34c4c;
-  --color-brand-gold: #c5a059;
+  --color-brand-dark: #120e0b;
+  --color-brand-card: #1c1514;
+  --color-brand-red: #8b1d1d;
+  --color-brand-maroon: #5e1212;
+  --color-brand-gold: #a68a56;
+  --color-brand-orange: #f7941d;
+  --color-brand-yellow: #ffd54f;
+  --color-brand-purple: #6351a2;
 }
 
 @layer utilities {

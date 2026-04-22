@@ -3,9 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Send, CheckCircle2, AlertCircle, Clock, ExternalLink } from 'lucide-react';
 import { Post, Comment } from '../types';
 import { postService } from '../services/postService';
-import { auth } from '../lib/firebase';
-
-import { CREATOR_NAME } from './Auth';
+import { auth, CREATOR_NAME } from '../lib/firebase';
 
 interface PostDetailsProps {
   post: Post;

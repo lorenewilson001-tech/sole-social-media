@@ -1,10 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { LogIn, Sparkles } from 'lucide-react';
-import { signInWithGoogle } from '../lib/firebase';
-
-export const LOGO_URL = 'https://cdn.perceptual.ai/ais/vw3ncz5aiqua3kthchcfke-864923380925-1745338830113-logo.jpg';
-export const CREATOR_NAME = 'Jannatun Neyeem';
+import { LogIn } from 'lucide-react';
+import { signInWithGoogle, LOGO_URL, CREATOR_NAME } from '../lib/firebase';
 
 export const Auth: React.FC = () => {
   const handleLogin = async () => {
@@ -16,7 +13,7 @@ export const Auth: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-brand-dark flex flex-col items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-brand-dark flex flex-col items-center justify-center p-4 relative overflow-hidden text-white font-sans">
       {/* Background Blobs */}
       <div className="absolute top-0 -left-4 w-72 h-72 bg-brand-red rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
       <div className="absolute top-0 -right-4 w-72 h-72 bg-brand-gold rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
@@ -29,17 +26,15 @@ export const Auth: React.FC = () => {
       >
         <div className="flex flex-col items-center mb-8">
           <div className="w-24 h-24 bg-brand-dark rounded-2xl flex items-center justify-center mb-4 shadow-[6px_6px_0px_theme(colors.brand-red)] border border-brand-gold/20 p-1">
-            <img 
-              src={LOGO_URL} 
-              alt="The Sole Ingredient" 
-              className="w-full h-full object-contain rounded-xl" 
-              referrerPolicy="no-referrer"
-              crossOrigin="anonymous"
-            />
+            <div className="flex flex-col items-center justify-center">
+              <span className="text-5xl font-black text-brand-gold leading-none">S</span>
+              <span className="text-[7px] text-brand-orange font-bold tracking-widest mt-1">THE SOLE INGREDIENT</span>
+            </div>
           </div>
           <h1 className="text-3xl font-bold text-white mb-2 tracking-tight text-center">The Sole Ingredient</h1>
-          <p className="text-brand-terracotta text-center font-medium italic">By {CREATOR_NAME}</p>
+          <p className="text-brand-orange text-center font-medium italic">By {CREATOR_NAME}</p>
         </div>
+
 
         <button
           onClick={handleLogin}
@@ -48,6 +43,7 @@ export const Auth: React.FC = () => {
           <LogIn className="w-5 h-5 text-brand-gold" />
           Continue with Google
         </button>
+
 
 
 
