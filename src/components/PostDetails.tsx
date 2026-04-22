@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Send, CheckCircle2, AlertCircle, Clock, ExternalLink, MessageSquare, Plus, ThumbsUp, ThumbsDown, Share2 } from 'lucide-react';
 import { Post, Comment } from '../types';
-import { postService } from '../services/postService';
+import { postService, transformDriveUrl } from '../services/postService';
 import { auth, CREATOR_NAME, CLIENT_NAME, JANNAT_EMAILS, LOREN_EMAILS } from '../lib/firebase';
 import { EditPostModal } from './EditPostModal';
 
@@ -17,6 +17,10 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
   const [newComment, setNewComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+
+  // Helper to ensure URLs are always "web-ready"
+  const safeImageUrl = transformDriveUrl(post.imageUrl);
+  const safeVideoUrl = post.videoUrl ? transformDriveUrl(post.videoUrl) : '';
 
   useEffect(() => {
     const unsubscribe = postService.subscribeToComments(post.id, (fetchedComments) => {
@@ -107,16 +111,16 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
 
         {/* Image Side (Instagram Style - Left) */}
         <div className="flex-[1.8] bg-black flex items-center justify-center relative overflow-hidden group min-h-[300px]">
-          {post.videoUrl ? (
+          {safeVideoUrl ? (
             <video 
-              src={post.videoUrl} 
+              src={safeVideoUrl} 
               className="w-full h-full object-contain z-0" 
               controls 
-              poster={post.imageUrl}
+              poster={safeImageUrl}
             />
           ) : (
             <img 
-              src={post.imageUrl} 
+              src={safeImageUrl} 
               className="w-full h-full object-contain z-0" 
               alt={post.title}
               referrerPolicy="no-referrer"
@@ -130,7 +134,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
           {/* Action Overlay (Bottom Corner) */}
           <div className="absolute bottom-4 right-4 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
             <a 
-              href={post.imageUrl} 
+              href={safeImageUrl} 
               target="_blank" 
               rel="noreferrer"
               className="p-3 bg-brand-dark/80 backdrop-blur-md text-brand-gold rounded-xl border border-brand-gold/30 hover:bg-brand-red hover:text-white transition-all shadow-2xl"

@@ -249,7 +249,7 @@ export const Dashboard: React.FC = () => {
         )}
         {selectedPost && (
           <PostDetails 
-            post={selectedPost} 
+            post={currentPosts.find(p => p.id === selectedPost.id) || selectedPost} 
             onClose={() => setSelectedPost(null)} 
             isClientView={activeTab === 'client'}
           />
