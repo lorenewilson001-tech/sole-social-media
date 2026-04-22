@@ -43,19 +43,13 @@ export const transformDriveUrl = (url: string): string => {
   
   // Handle Google Drive
   if (url.includes('drive.google.com')) {
-    // Better regex to catch any Drive ID format
     const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
     if (match && match[1]) {
-      // This is a more robust way to embed Drive images across all browsers
+      // lh3.googleusercontent.com is often more direct for images
       return `https://lh3.googleusercontent.com/d/${match[1]}`;
     }
   }
   
-  // Handle Google Photos links (limited support as these are dynamic)
-  if (url.includes('photos.app.goo.gl')) {
-    return url; // Still highly restricted by Google
-  }
-
   return url;
 };
 

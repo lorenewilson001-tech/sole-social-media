@@ -89,6 +89,11 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose }) => 
                   />
                   <ImageIcon className="absolute left-3.5 top-3.5 text-slate-500" size={16} />
                 </div>
+                {imageUrl.includes('drive.google.com') && (
+                  <p className="text-[10px] text-brand-gold italic ml-1">
+                    * Make sure it's set to "Anyone with the link can view"
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
