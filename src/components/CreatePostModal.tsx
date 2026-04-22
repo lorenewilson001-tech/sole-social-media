@@ -46,9 +46,12 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose }) => 
             to: LOREN_EMAILS[0],
             bcc: LOREN_EMAILS.slice(1),
             subject,
-            message
+            message,
+            title: 'NEW CONTENT DRAFT',
+            actionLabel: 'REVIEW IN PORTAL',
+            actionUrl: `${window.location.origin}/?view=client`
           });
-          alert('Post Published! Email notification sent to Chef Loren.');
+          alert('Post Published! Automated email sent to Chef Loren.');
         } catch (emailErr) {
           console.error('Email error:', emailErr);
           alert('Post Published! (However, automated email failed - check your Resend API Key)');

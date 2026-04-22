@@ -58,9 +58,11 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
           to: JANNAT_EMAILS[0],
           bcc: JANNAT_EMAILS.slice(1),
           subject,
-          message
+          message,
+          title: 'CLIENT FEEDBACK',
+          actionLabel: 'VIEW IN PORTAL',
+          actionUrl: window.location.origin
         }).then(() => {
-          console.log('Comment notification sent to Jannat');
         }).catch(err => {
           console.error('Email fail on comment:', err);
         });
@@ -73,7 +75,10 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
           to: LOREN_EMAILS[0],
           bcc: LOREN_EMAILS.slice(1),
           subject,
-          message
+          message,
+          title: 'CREATOR UPDATE',
+          actionLabel: 'VIEW IN PORTAL',
+          actionUrl: `${window.location.origin}/?view=client`
         }).then(() => {
           console.log('Comment notification sent to Loren');
         }).catch(err => {
@@ -104,7 +109,10 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
           to: JANNAT_EMAILS[0],
           bcc: JANNAT_EMAILS.slice(1),
           subject,
-          message
+          message,
+          title: isApproved ? 'POST APPROVED' : 'REVISION REQUESTED',
+          actionLabel: 'VIEW IN PORTAL',
+          actionUrl: window.location.origin
         }).then(() => {
           alert(`Post marked as ${status}. Notification sent to Jannat.`);
         }).catch(err => {
