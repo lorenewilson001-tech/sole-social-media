@@ -139,7 +139,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose }) => 
             {(imageUrl || videoUrl) && (
               <div className="mt-2 aspect-video rounded-xl overflow-hidden border border-white/10 bg-black relative group shadow-lg">
                 {videoUrl ? (
-                  videoUrl.includes('drive.google.com') ? (
+                  (videoUrl.includes('drive.google.com') || videoUrl.includes('lh3.googleusercontent.com')) ? (
                     <iframe 
                       src={transformDriveUrl(videoUrl, 'video')} 
                       className="w-full h-full border-none"

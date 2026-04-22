@@ -41,25 +41,27 @@ const handleFirestoreError = (error: any, operationType: FirestoreErrorInfo['ope
 export const transformDriveUrl = (url: string, mode: 'image' | 'video' | 'thumbnail' = 'image'): string => {
   if (!url) return url;
   
-  // Handle Google Drive
+  let id = '';
+  
+  // Handle Google Drive raw links
   if (url.includes('drive.google.com')) {
     const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-    if (match && match[1]) {
-      const id = match[1];
-      
-      if (mode === 'video') {
-        // For video preview/embed in iframe
-        return `https://drive.google.com/file/d/${id}/preview`;
-      }
-      
-      if (mode === 'thumbnail') {
-        // Get a generated thumbnail from Drive (works for images and videos)
-        return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`;
-      }
-      
-      // Default: For images direct embed
-      return `https://lh3.googleusercontent.com/d/${id}`;
+    if (match) id = match[1];
+  } 
+  // Handle already transformed lh3 image links
+  else if (url.includes('lh3.googleusercontent.com/d/')) {
+    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (match) id = match[1];
+  }
+
+  if (id) {
+    if (mode === 'video') {
+      return `https://drive.google.com/file/d/${id}/preview`;
     }
+    if (mode === 'thumbnail') {
+      return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`;
+    }
+    return `https://lh3.googleusercontent.com/d/${id}`;
   }
   
   return url;
@@ -71,15 +73,9 @@ export const postService = {
     const authorId = auth.currentUser?.uid || 'jannat-creator-id';
     const id = doc(collection(db, 'posts')).id;
     
-    // Transform Drive links for compatibility
-    const sanitizedData = {
-      ...data,
-      imageUrl: transformDriveUrl(data.imageUrl),
-      videoUrl: data.videoUrl ? transformDriveUrl(data.videoUrl) : ''
-    };
-
+    // Form the post data
     const postData = {
-      ...sanitizedData,
+      ...data,
       authorId,
       status: 'pending' as PostStatus,
       createdAt: serverTimestamp(),
@@ -99,9 +95,6 @@ export const postService = {
       updatedAt: serverTimestamp()
     };
     
-    if (data.imageUrl) sanitizedData.imageUrl = transformDriveUrl(data.imageUrl);
-    if (data.videoUrl) sanitizedData.videoUrl = transformDriveUrl(data.videoUrl);
-
     try {
       await updateDoc(doc(db, 'posts', postId), sanitizedData);
       return true;
