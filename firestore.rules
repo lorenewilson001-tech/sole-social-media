@@ -49,34 +49,15 @@ service cloud.firestore {
 
     // --- Rules ---
     match /posts/{postId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn() && (resource.data.authorId == request.auth.uid || resource.data.clientEmail == request.auth.token.email);
-      
-      allow create: if isSignedIn() && isValidId(postId) && isValidPost(incoming());
-      
-      allow update: if isSignedIn() && (
-        // Case 1: Owner updates content
-        (isOwner(existing().authorId) && 
-         incoming().diff(existing()).affectedKeys().hasOnly(['title', 'imageUrl', 'caption', 'status', 'updatedAt']) &&
-         incoming().authorId == existing().authorId &&
-         incoming().createdAt == existing().createdAt &&
-         incoming().updatedAt == request.time) ||
-        // Case 2: Client updates status
-        (isSignedIn() && request.auth.token.email == existing().clientEmail &&
-         incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']) &&
-         incoming().authorId == existing().authorId &&
-         incoming().createdAt == existing().createdAt &&
-         incoming().updatedAt == request.time)
-      );
+      allow read: if true; 
+      allow create: if true; 
+      allow update: if true; 
+      allow delete: if true;
 
       match /comments/{commentId} {
-        allow list: if isSignedIn(); // Restricted by parent post read
-        allow get: if isSignedIn();
-        
-        allow create: if isSignedIn() && isValidId(commentId) && isValidComment(incoming()) &&
-                      exists(/databases/$(database)/documents/posts/$(postId));
-                      
-        allow delete: if isSignedIn() && isOwner(existing().authorId);
+        allow read: if true;
+        allow create: if true;
+        allow delete: if true;
       }
     }
   }

@@ -40,11 +40,12 @@ const handleFirestoreError = (error: any, operationType: FirestoreErrorInfo['ope
 
 export const postService = {
   async createPost(data: Omit<Post, 'id' | 'createdAt' | 'updatedAt' | 'authorId' | 'status'>) {
-    if (!auth.currentUser) throw new Error("Not authenticated");
+    // If not authenticated, we use a fixed ID for Jannat's workflow
+    const authorId = auth.currentUser?.uid || 'jannat-creator-id';
     const id = doc(collection(db, 'posts')).id;
     const postData = {
       ...data,
-      authorId: auth.currentUser.uid,
+      authorId,
       status: 'pending' as PostStatus,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
@@ -80,12 +81,11 @@ export const postService = {
   },
 
   subscribeToPosts(callback: (posts: Post[]) => void) {
-    if (!auth.currentUser) return () => {};
-    const q = query(
-      collection(db, 'posts'),
-      where('authorId', '==', auth.currentUser.uid),
-      orderBy('createdAt', 'desc')
-    );
+    // Show all posts for the creator panel if no user is logged in
+    const q = auth.currentUser 
+      ? query(collection(db, 'posts'), where('authorId', '==', auth.currentUser.uid), orderBy('createdAt', 'desc'))
+      : query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
+      
     return onSnapshot(q, (snapshot) => {
       const posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Post));
       callback(posts);
@@ -105,12 +105,14 @@ export const postService = {
   },
 
   async addComment(postId: string, text: string) {
-    if (!auth.currentUser) throw new Error("Not authenticated");
+    const authorId = auth.currentUser?.uid || 'anonymous-user';
+    const authorName = auth.currentUser?.displayName || auth.currentUser?.email || 'Guest';
+    
     const commentData = {
       postId,
       text,
-      authorId: auth.currentUser.uid,
-      authorName: auth.currentUser.displayName || auth.currentUser.email || 'Client',
+      authorId,
+      authorName,
       createdAt: serverTimestamp()
     };
     try {
