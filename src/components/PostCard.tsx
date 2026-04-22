@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { MessageSquare, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
+import { MessageSquare, CheckCircle2, Clock, AlertCircle, Video } from 'lucide-react';
 import { Post } from '../types';
 
 interface PostCardProps {
@@ -28,9 +28,16 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
         <img 
           src={post.imageUrl} 
           alt={post.title} 
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80"
           referrerPolicy="no-referrer"
         />
+        {post.videoUrl && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="bg-brand-red/80 p-3 rounded-full shadow-2xl group-hover:scale-125 transition-transform border border-white/20">
+              <Video className="w-6 h-6 text-white" />
+            </div>
+          </div>
+        )}
         <div className="absolute top-3 right-3">
           <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border backdrop-blur-md ${color}`}>
             <Icon className="w-3 h-3" />

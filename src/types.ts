@@ -4,6 +4,7 @@ export interface Post {
   id: string;
   title: string;
   imageUrl: string;
+  videoUrl?: string;
   caption: string;
   status: PostStatus;
   authorId: string;

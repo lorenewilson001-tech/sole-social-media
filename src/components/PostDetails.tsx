@@ -87,38 +87,49 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
 
         {/* Image Side (Instagram Style - Left) */}
         <div className="flex-[1.5] bg-black flex items-center justify-center relative overflow-hidden group">
-          <img 
-            src={post.imageUrl} 
-            className="w-full h-full object-contain" 
-            alt={post.title}
-            referrerPolicy="no-referrer"
-          />
+          {post.videoUrl ? (
+            <video 
+              src={post.videoUrl} 
+              className="w-full h-full object-contain" 
+              controls 
+              poster={post.imageUrl}
+            />
+          ) : (
+            <img 
+              src={post.imageUrl} 
+              className="w-full h-full object-contain" 
+              alt={post.title}
+              referrerPolicy="no-referrer"
+            />
+          )}
           
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
-            <a 
-              href={post.imageUrl} 
-              target="_blank" 
-              rel="noreferrer"
-              className="p-4 bg-brand-gold text-brand-dark rounded-2xl shadow-xl hover:scale-110 transition-transform font-bold flex items-center gap-2"
-            >
-              <ExternalLink size={20} />
-              Open Original
-            </a>
-            <button 
-              onClick={() => {
-                const link = document.createElement('a');
-                link.href = post.imageUrl;
-                link.download = `sole-ingredient-${post.title}.jpg`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-              }}
-              className="p-4 bg-white text-brand-dark rounded-2xl shadow-xl hover:scale-110 transition-transform font-bold flex items-center gap-2"
-            >
-              <Send size={20} className="rotate-90" />
-              Download High-Res
-            </button>
-          </div>
+          {!post.videoUrl && (
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+              <a 
+                href={post.imageUrl} 
+                target="_blank" 
+                rel="noreferrer"
+                className="p-4 bg-brand-gold text-brand-dark rounded-2xl shadow-xl hover:scale-110 transition-transform font-bold flex items-center gap-2"
+              >
+                <ExternalLink size={20} />
+                Open Original
+              </a>
+              <button 
+                onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = post.imageUrl;
+                  link.download = `sole-ingredient-${post.title}.jpg`;
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
+                className="p-4 bg-white text-brand-dark rounded-2xl shadow-xl hover:scale-110 transition-transform font-bold flex items-center gap-2"
+              >
+                <Send size={20} className="rotate-90" />
+                Download High-Res
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Info & Comments Side (Instagram Style - Right) */}
