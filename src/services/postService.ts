@@ -104,9 +104,9 @@ export const postService = {
     }, (e) => handleFirestoreError(e, 'list', 'posts'));
   },
 
-  async addComment(postId: string, text: string) {
+  async addComment(postId: string, text: string, forcedAuthorName?: string) {
     const authorId = auth.currentUser?.uid || 'anonymous-user';
-    const authorName = auth.currentUser?.displayName || auth.currentUser?.email || 'Guest';
+    const authorName = forcedAuthorName || auth.currentUser?.displayName || auth.currentUser?.email || 'Guest';
     
     const commentData = {
       postId,

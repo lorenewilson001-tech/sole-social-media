@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Send, CheckCircle2, AlertCircle, Clock, ExternalLink, MessageSquare, Plus, ThumbsUp, ThumbsDown, Share2 } from 'lucide-react';
 import { Post, Comment } from '../types';
 import { postService } from '../services/postService';
-import { auth, CREATOR_NAME, JANNAT_EMAILS, LOREN_EMAILS } from '../lib/firebase';
+import { auth, CREATOR_NAME, CLIENT_NAME, JANNAT_EMAILS, LOREN_EMAILS } from '../lib/firebase';
 
 interface PostDetailsProps {
   post: Post;
@@ -27,12 +27,13 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
 
     setIsSubmitting(true);
     try {
-      await postService.addComment(post.id, newComment.trim());
+      const authorName = isClientView ? `Chef ${CLIENT_NAME}` : CREATOR_NAME;
+      await postService.addComment(post.id, newComment.trim(), authorName);
       
       // If client sends a comment, notify Jannat's 3 emails
       if (isClientView) {
-        const subject = `New Feedback from Client: ${post.title}`;
-        const message = `Hello Jannat! Your client Loren just left a comment on "${post.title}":\n\n"${newComment}"\n\nPlease check the portal to respond: ${window.location.origin}`;
+        const subject = `Feedback from Chef Loren - ${post.title}`;
+        const message = `Hello Jannat! Chef Loren just left feedback on "${post.title}":\n\n"${newComment}"\n\nPlease check the portal to respond: ${window.location.origin}`;
         const bccList = JANNAT_EMAILS.join(',');
         const mailtoUrl = `mailto:${JANNAT_EMAILS[0]}?bcc=${bccList}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
         window.location.href = mailtoUrl;
@@ -86,34 +87,39 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
         </div>
 
         {/* Image Side (Instagram Style - Left) */}
-        <div className="flex-[1.5] bg-black flex items-center justify-center relative overflow-hidden group">
+        <div className="flex-[1.8] bg-black flex items-center justify-center relative overflow-hidden group min-h-[300px]">
           {post.videoUrl ? (
             <video 
               src={post.videoUrl} 
-              className="w-full h-full object-contain" 
+              className="w-full h-full object-contain z-0" 
               controls 
               poster={post.imageUrl}
             />
           ) : (
             <img 
               src={post.imageUrl} 
-              className="w-full h-full object-contain" 
+              className="w-full h-full object-contain z-0" 
               alt={post.title}
               referrerPolicy="no-referrer"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = 'https://placehold.co/800x800/121212/BB86FC?text=Image+Loading+or+Link+Issue';
+              }}
             />
           )}
           
-          {!post.videoUrl && (
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
-              <a 
-                href={post.imageUrl} 
-                target="_blank" 
-                rel="noreferrer"
-                className="p-4 bg-brand-gold text-brand-dark rounded-2xl shadow-xl hover:scale-110 transition-transform font-bold flex items-center gap-2"
-              >
-                <ExternalLink size={20} />
-                Open Original
-              </a>
+          {/* Action Overlay (Bottom Corner) */}
+          <div className="absolute bottom-4 right-4 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+            <a 
+              href={post.imageUrl} 
+              target="_blank" 
+              rel="noreferrer"
+              className="p-3 bg-brand-dark/80 backdrop-blur-md text-brand-gold rounded-xl border border-brand-gold/30 hover:bg-brand-red hover:text-white transition-all shadow-2xl"
+              title="Open Original"
+            >
+              <ExternalLink size={18} />
+            </a>
+            {!post.videoUrl && (
               <button 
                 onClick={() => {
                   const link = document.createElement('a');
@@ -123,13 +129,17 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose, isClien
                   link.click();
                   document.body.removeChild(link);
                 }}
-                className="p-4 bg-white text-brand-dark rounded-2xl shadow-xl hover:scale-110 transition-transform font-bold flex items-center gap-2"
+                className="p-3 bg-brand-dark/80 backdrop-blur-md text-white rounded-xl border border-white/10 hover:bg-brand-red transition-all shadow-2xl"
+                title="Download High-Res"
               >
-                <Send size={20} className="rotate-90" />
-                Download High-Res
+                <Plus size={18} className="rotate-45" />
               </button>
-            </div>
-          )}
+            )}
+          </div>
+
+          <div className="absolute top-4 left-4 bg-brand-red px-2 py-1 rounded text-[10px] font-black text-white uppercase tracking-widest shadow-lg">
+             {post.videoUrl ? 'VIDEO' : 'STILL IMAGE'}
+          </div>
         </div>
 
         {/* Info & Comments Side (Instagram Style - Right) */}
